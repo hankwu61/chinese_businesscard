@@ -20,7 +20,7 @@
 | PHONE | 電話號碼 | 02-1234-5678、555-123-4567 |
 | FAX | 傳真號碼 | 02-1234-5678、555-123-4567 |
 | MOBILE | 行動電話 | 0912345678、13812345678 |
-| COMPANY | 公司名稱 | 阿里巴巴集團、Microsoft |
+| COMPANY | 公司名稱 | 依林一集團、Microsoft |
 | EMAIL | 電子郵件 | john@example.com |
 | ADDRESS | 地址 | 台北市信義區信義路五段7號 |
 | TAX_ID | 統一編號 | 12345678、123456789 |
@@ -103,7 +103,7 @@ from predict import BusinessCardNER
 ner = BusinessCardNER()
 
 # 預測名片信息
-text = "張三 總經理 02-1234-5678 0912345678 阿里巴巴集團 john@example.com 台北市信義區信義路五段7號 12345678 www.example.com"
+text = "張三 總經理 02-1234-5678 0912345678 依林一集團 john@example.com 台北市信義區信義路五段7號 12345678 www.example.com"
 result = ner.predict_and_format(text)
 
 print(f"姓名: {result['summary']['name']}")
