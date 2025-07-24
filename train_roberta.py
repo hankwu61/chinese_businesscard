@@ -60,7 +60,7 @@ class RobertaNERTrainer:
     def train(self, train_loader, val_loader, epochs: int = 5, learning_rate: float = 2e-5):
         """訓練模型"""
         optimizer = AdamW(self.model.parameters(), lr=learning_rate)
-        criterion = nn.CrossEntropyLoss(ignore_index=0)  # 忽略padding標籤
+        criterion = nn.CrossEntropyLoss(ignore_index=-100)  # 忽略-100標籤
         
         # 學習率調度器
         total_steps = len(train_loader) * epochs
@@ -155,6 +155,11 @@ class RobertaNERTrainer:
                     pred_seq = pred_seq[mask == 1]
                     label_seq = label_seq[mask == 1]
                     
+                    # 過濾掉-100標籤
+                    valid_indices = label_seq != -100
+                    pred_seq = pred_seq[valid_indices]
+                    label_seq = label_seq[valid_indices]
+                    
                     all_preds.extend(pred_seq)
                     all_labels.extend(label_seq)
         
@@ -205,14 +210,15 @@ def main():
     train_loader, val_loader = trainer.prepare_data(texts, labels, batch_size=16)
     
     # 訓練模型
-    trainer.train(train_loader, val_loader, epochs=5, learning_rate=2e-5)
+    trainer.train(train_loader, val_loader, epochs=20, learning_rate=2e-5)
     
     print("\n🎉 訓練完成！")
     print("📁 最佳模型已保存為: best_ner_model.pth")
     print("\n📝 下一步:")
-    print("1. 運行 'python predict.py' 測試預測功能")
-    print("2. 運行 'python improved_predict.py' 測試改進版本")
-    print("3. 運行 'python predict.py --interactive' 進入互動模式")
+    print("1. 運行 'python predict.py' 測試基礎預測功能")
+    print("2. 運行 'python predict_roberta.py' 測試RoBERTa預測功能")
+    print("3. 運行 'python improved_predict.py' 測試改進版本")
+    print("4. 運行 'python predict.py --interactive' 進入互動模式")
 
 if __name__ == "__main__":
     main() 

@@ -46,7 +46,7 @@ class NERTrainer:
     def train(self, train_loader, val_loader, epochs: int = 10, learning_rate: float = 2e-5):
         """訓練模型"""
         optimizer = AdamW(self.model.parameters(), lr=learning_rate)
-        criterion = nn.CrossEntropyLoss(ignore_index=0)  # 忽略padding標籤
+        criterion = nn.CrossEntropyLoss(ignore_index=-100)  # 忽略-100標籤
         
         # 學習率調度器
         total_steps = len(train_loader) * epochs
@@ -129,6 +129,11 @@ class NERTrainer:
                     # 只保留非padding的標籤
                     pred_seq = pred_seq[mask == 1]
                     label_seq = label_seq[mask == 1]
+                    
+                    # 過濾掉-100標籤
+                    valid_indices = label_seq != -100
+                    pred_seq = pred_seq[valid_indices]
+                    label_seq = label_seq[valid_indices]
                     
                     all_preds.extend(pred_seq)
                     all_labels.extend(label_seq)
